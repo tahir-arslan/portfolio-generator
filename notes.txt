@@ -1,0 +1,239 @@
+Module 9 - Node.js Intro
+With node we don't need to a browser to run javascript. Node.js is a j
+    javascript runtime environment, allowing us to write javascript on the server side through Node. Third-party modules will also be used to extend code's functionality
+        Note: node.js doesn't know anything about the DOM since it is seperate from the browser.
+            no DOM methods
+            no browser-based events
+            no HTTP request functionalities
+
+Node has a powerful module system which allows you to import bundles of 
+    code to extend functionality so you don't have to hard code it yourself (ex file system)
+        this also allows node to modularize code into different files 
+            as well, improving code organization and maintenance
+        a module can be a function, class, object, or even a simple var
+        essentially, it is a reusable piece of code that can be imported
+            to anywhere it is needed
+
+9.1
+this project will use inquirer. node modules need to be  installed into 
+    each new project depending on which module is being used.
+since node is a js language, must write node code into a js file. the 
+    main file, for example app.js, will then be executed by running `node app.js` or `node app` in the terminal.
+if we want to use a tool not built into the JS language, for example 
+    `document.querySelector()` or `.fetch()`, the Javascript runtime environment can help with that. 
+        if we `console.log(document)` into app.js and run node, we will 
+            get an error since `document` isn't defined
+        but because of the Javascript runtime environment, we are able 
+            to use funtionality that lets us interact with features found on our computers
+
+in node, `process` is equivalent to `document` from the browser
+    example `process.argv`
+
+var vs const
+    const is a keyword that allows us to create a variable that cannot 
+        be reassigned a value once it is defined
+    note: when a variable is assigned, the reference is to that parent object. for example: 
+        const newString = "hello world"; this cannot be edited as the 
+            reference is directly to the content
+        const newArray = ['dog', 'cat', 'mouse']; reference is to 
+            newArray which in this case is a container. so the content inside the container can be manipulated
+        const newObj = { name: Arslan, age: 99 ); reference is to 
+            container newObj, so content can be manipulated
+
+arrow functions
+    do not replace function() methods but is an alternative way to 
+    create a function, helps to create more concise function expressions where possible. ex:
+        const addNums = (numOne, numTwo) => {
+            return numOne + numTwo;
+        };
+    if only one action is being performed, can define function and return value all in one line (following ex is an implicit return, meaning we do not need to use a `return` statement or `{ }`)
+        ex. `const addNums = (numOne, numTwo) => numOne + numTwo;`
+        note: does have limitations compared to defining functions the traditional way (see below)
+    if we are using more than one action, will need to use `return` ex:
+        const addNums = (numOne, numTwo) => {
+        console.log(numOne, numTwo);
+        return numOne + numTwo;
+        };
+    key note about arrow functions:
+        they do not have their own `this` keyword
+        instead, take the meaning of `this` from their enclosing scope
+
+let/const vs var
+    let is similar to var
+    let/const are both block-scoped, therefore will not exist outside of the block it was created in
+    var is function-scoped
+        if `var = sum` exists globally, and then created again inside an if statement or for loop, it will override the global `sum` 
+
+new array method: .forEach() can replace for loops *FOR ARRAYS ONLY* 
+    and allow code to be cleaned up/become more 
+
+9.2
+since we can't use WebAPI since app isn't being run in browser, we can 
+    create a function to return HTML as a string, that can be output into an HTML file
+
+Template Literals
+allows us to embed javascript expersions into strings. 
+    *IMPORTANT:* string must be enclosed by backticks, then variables 
+        can be interpretted like so: `${variable}`. ex.:
+        const generatePage = (userName, githubName) => `Name; ${userName}, Github: ${githubName}`;
+allows us to also enter multi-line text, and will interpret line break 
+    in the exact same way the code is written. ex:
+<---
+    const generatePage = (userName, githubName) => {
+        return `
+            Name: ${userName}
+           GitHub: ${githubName}
+        `;
+    };
+--->
+
+Destructuring Assignments
+
+Node.js has a built in module for interacting with the file system. in 
+    it's documentation (https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_fs_writefile_file_data_options_callback), will find it if searching for "File System." since it is a module, must be imported first to use, by using:
+        `const fs = require('fs');`
+
+9.3
+NPM (node package manager) is an online repo used for publishing open 
+    source codes anyone can download, used via command-line to install code packages/module bundles into a project
+
+to create a package.json, in the root of the project, run `npm init`
+    package.json is a file that that holds information for all modules needed to run your application. when a user downloads your project, they need to run `npm init` and npm will find the json file and automatically download all modules listed in package.json  that rae needed for the project to run
+
+inquirer is an open source code and not part of node. it can be 
+    downloaded through npm using `npm install inquirer` for our purposes we need a specific version, so must run `npm install inquirer@8.2.4`
+        you will now notice a package-lock.json file. when installing 
+            inquirer, npm downloads package-lock.json which tells it the files and versions required to download for inquirer to work
+                these are called nested dependencies
+
+remember: it is safer to use local variables as global variables are accessible throughout the entire project and can be changed from anywhere, potentially making it difficult to maintain
+
+9.4
+when destructuring a value from an object, if the wrong property key name is used, variable
+    will return a value of `undefined` instead of `err` ex:
+        const personObj = {
+        name: 'Lernantino',
+        occupation: 'Web Developer'
+        };
+        const { name, age } = personObj;
+        console.log(name, age); // This would print 'Lernantino' and undefined, but won't cause an error
+
+Rest vs Spread Operator
+two actions often used in programming:
+    1) create a copy of a dataset so we don't affect the original
+    2) create a single piece of data bsaed on a combination of other data
+        in both cases, use the `...` operator. but placement dictates it's usage
+The way javascript works due to the way it handles primitive data/object data types, when you
+    duplicate an array into a new array, and try to affect only the new array, both arrays will be
+    affected. ex:
+        const originalAnimalArr = ['dog', 'cat', 'mouse'];
+        const duplicateAnimalArr = originalAnimalArr;
+        duplicateAnimalArr.push('bird');
+            this will still push bird into both duplicateAnimalArr and originalAnimalArr
+    In order to prevent this from happening, need to use a spread operator. ex.
+        const originalAnimalArr = ['dog', 'cat', 'mouse'];
+        const duplicateAnimalArr = [...originalAnimalArr];
+            now, javascript will see the `[ ]` in duplicateAnimalArr, interpret it as a new array,
+            then read the contents inside. beginning with `...` that tells javascript to take the
+            contents from originalAnimalArr, and spread it across the new array (duplicateAnimalArr)
+when destructuring, we can use a Rest Operator (not to be confused with Spread Operator)
+    ex: const { projects, about, ...header} = templateData;
+        this `...` in `...header` is the rest operator, telling javascript that the remaining objects 
+            that haven't been destructured from templateData, store all of them in the new
+            variable `header`
+
+User is asked to provide 'about' section. if refused, no information will be present, but there 
+    will still be an object for 'About' in the templateData object array. In this case, 
+    `templateData.about` will just return undefined. in our case, we cannot code for the HTML 
+    directly into templateData function, because About section will still render with empty 
+    content. 
+Also, we cannot include an `if` statement inside template literals. Template literal interprets
+    data that is returned into it, and that gets interpolated into content. `if` statements don't
+    return data on their own, so the solution is to create, then perform a function call inside
+    the template literal. which is why in page-template.js we created a new function called 
+    `generateAbout` with an if statement returning a value. then this is used inside a template 
+    literal in the main HTML portion of the code. therefore, if user includes an about section, 
+    it will return that code into  the final HTML, and if not then no About section will be 
+    generated.
+
+.forEach() vs .map()
+`.forEach()` replaces `if` statements and cannot be used inside template literals since it does
+    not natively return data (just uses array for other purposes). in this case, we can use
+    `.map()`. this works similar to `.forEach()` (ie, takes in a function as a parameter to executed
+    on each element in array, and then accepts each element of array as the function's
+    parameter). But `.forEach()` just runs the function and nothing else, `.map()` takes array
+    data and uses it to create a brand-new array, meaning it is required to include a `return`
+        see the following example:
+            const animalArr = ['Dogs', 'Cats', 'Horses', 'Birds'];
+            const coolAnimalArr = animalArr.map(animal => {
+                console.log(animal);
+                return `${animal} are really cool animals.`;
+            });
+        if this example was console.logged, then you would see a new array, but after each
+        animal it would say `are really cool animals.`
+            coolAnimalArr = ['Dogs are really cool animals', 'Cats are really cool animals',
+            'Horses are really cool animals', 'Birds are really cool animals'];
+
+9.5
+file structure;
+    folder `dist` stands for distribution. common name in web development used to indicate
+    that the contents of this folder are the exact files needed for the final product
+        therefore for this project, deployment of website only needs an html and a css file
+        JS file is not needed for the website (only for the project itself)
+    folder `utils` stands for utility. the purpose is to hold files whose functionality has nothing
+        to do with the app's main functionality, but with the utilities to get the app working
+
+be aware of the Pyramid of Doom, aka Callback Hell!
+    (nest inside of a nest inside of a nest...)
+
+PROMISES (9.5.4)
+learning how to write our own javascript promise, and in this lesson with fs!
+    const fs = require('fs');
+    const writeFile = fileContent => {
+        return new Promise((resolve, reject) => {});
+    };
+when using the browser's `.fetch()` API, we ask for data from another server. this is an
+    asynchronous function. Now, we created our own asynchronous function by defining
+    a new *Promise object*. 
+        This Promise object will act as a container to allow us to run code at some point that
+            will be in the status of 'pending' (code is running but waiting for a response)
+            we provided it with a function that accepts 2 functions as parameters,
+            `resolve` and `reject`. now we can write whatever asynchronous functionality
+            we need to execute, and then run the `resolve()` when code is successful [or 
+            `reject()` when code is unsuccessful]
+                Promises have 3 states: pending, fulfilled (resolved), failed (rejected)
+
+for exporting a module, specifically the writeFile and copyFile promises created in 
+    `generate-site.js` we can do:
+        module.exports = {
+            writeFile: writeFile,
+            copyFile: copyFile
+        };
+    with this we are exporting an object with 2 functions (writeFile() and copyFile()), and using
+        them as methods (writeFile and copyFile). but since both names are same, ES6 allows
+        us to simplify it with the following:
+            module.exports = { writeFile, copyFile };
+        this is known as *shorthand property names*
+            if property key name is the same as it's value, we can just write the name and
+            ES6 will interpret it for both the property key name and its value
+
+remember since this is a node.js project and the main file (index.html) is in another folder,
+    we cannot deploy it to GitHub. To view the final result, you would have to upload the 
+    entire project, another user will have to clone the repo, and then and run node.js
+        so make sure to create a really solid README.md with detailed instructions on
+        how to use the application!
+        
+questions:
+9.4.6
+completely confused about 
+            const generateProjects = projectsArr => {
+            const projectHtmlArr = projectsArr.map(({ name, description, languages, link }) => {
+                    ...
+                });
+            return `
+                ...
+                ${projectHtmlArr.join('')}
+                ...
+            `;
+            };
+    what is going on with { name, description, languages, link } and why .join()?
